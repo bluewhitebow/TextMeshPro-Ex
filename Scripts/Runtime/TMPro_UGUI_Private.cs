@@ -4441,7 +4441,7 @@ namespace TMPro
                 m_mesh.RecalculateBounds();
                 //m_mesh.bounds = new Bounds(new Vector3((m_meshExtents.max.x + m_meshExtents.min.x) / 2, (m_meshExtents.max.y + m_meshExtents.min.y) / 2, 0) + offset, new Vector3(m_meshExtents.max.x - m_meshExtents.min.x, m_meshExtents.max.y - m_meshExtents.min.y, 0));
 
-                m_canvasRenderer.SetMesh(m_mesh);
+                ApplyNativeCanvasMesh(0, m_mesh);
 
                 // Cache CanvasRenderer color of the parent text object.
                 Color parentBaseColor = m_canvasRenderer.GetColor();
@@ -4468,7 +4468,7 @@ namespace TMPro
 
                     m_subTextObjects[i].mesh.RecalculateBounds();
 
-                    m_subTextObjects[i].canvasRenderer.SetMesh(m_subTextObjects[i].mesh);
+                    ApplyNativeCanvasMesh(i, m_subTextObjects[i].mesh);
 
                     // Set CanvasRenderer color to match the parent text object.
                     m_subTextObjects[i].canvasRenderer.SetColor(parentBaseColor);
@@ -4479,6 +4479,8 @@ namespace TMPro
                     // Sync RaycastTarget property with parent text object
                     m_subTextObjects[i].raycastTarget = this.raycastTarget;
                 }
+
+                RaiseMeshUploaded();
             }
 
             // Event indicating the text has been regenerated.

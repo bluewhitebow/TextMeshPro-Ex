@@ -582,6 +582,29 @@ namespace TMPro
 
             for (int i = 1; i < m_subTextObjects.Length && m_subTextObjects[i] != null; i++)
                 m_subTextObjects[i].canvasRenderer.SetMesh(null);
+
+            RaiseMeshUploaded();
+        }
+
+
+        /// <summary>
+        /// Upload mesh to the native CanvasRenderer unless an external pass renderer has suppressed native draw.
+        /// </summary>
+        void ApplyNativeCanvasMesh(int index, Mesh mesh)
+        {
+            if (m_suppressNativeCanvasMesh)
+                mesh = null;
+
+            if (index == 0)
+            {
+                if (m_canvasRenderer != null)
+                    m_canvasRenderer.SetMesh(mesh);
+
+                return;
+            }
+
+            if (m_subTextObjects != null && index < m_subTextObjects.Length && m_subTextObjects[index] != null)
+                m_subTextObjects[index].canvasRenderer.SetMesh(mesh);
         }
 
 
@@ -600,14 +623,8 @@ namespace TMPro
         {
             mesh.RecalculateBounds();
 
-            if (index == 0)
-            {
-                m_canvasRenderer.SetMesh(mesh);
-            }
-            else
-            {
-                m_subTextObjects[index].canvasRenderer.SetMesh(mesh);
-            }
+            ApplyNativeCanvasMesh(index, mesh);
+            RaiseMeshUploaded();
         }
 
 
@@ -650,11 +667,10 @@ namespace TMPro
 
                 mesh.RecalculateBounds();
 
-                if (i == 0)
-                    m_canvasRenderer.SetMesh(mesh);
-                else
-                    m_subTextObjects[i].canvasRenderer.SetMesh(mesh);
+                ApplyNativeCanvasMesh(i, mesh);
             }
+
+            RaiseMeshUploaded();
         }
 
 
@@ -688,11 +704,10 @@ namespace TMPro
 
                 mesh.RecalculateBounds();
 
-                if (i == 0)
-                    m_canvasRenderer.SetMesh(mesh);
-                else
-                    m_subTextObjects[i].canvasRenderer.SetMesh(mesh);
+                ApplyNativeCanvasMesh(i, mesh);
             }
+
+            RaiseMeshUploaded();
         }
 
 

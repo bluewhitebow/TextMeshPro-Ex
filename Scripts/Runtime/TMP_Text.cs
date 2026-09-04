@@ -1270,6 +1270,33 @@ namespace TMPro
         /// </summary>
         public virtual event Action<TMP_TextInfo> OnPreRenderText = delegate { };
 
+        /// <summary>
+        /// When true, TextMeshProUGUI still updates CPU-side mesh data but does not upload it to
+        /// its own CanvasRenderer or official TMP_SubMeshUI renderers. Extra pass Graphics can then own draw order.
+        /// </summary>
+        public bool suppressNativeCanvasMesh
+        {
+            get { return m_suppressNativeCanvasMesh; }
+            set { m_suppressNativeCanvasMesh = value; }
+        }
+        [NonSerialized]
+        protected bool m_suppressNativeCanvasMesh;
+
+        /// <summary>
+        /// Raised after mesh upload (or native ClearMesh), including when suppressNativeCanvasMesh is set
+        /// and when the text is empty so listeners can hide extra pass renderers.
+        /// </summary>
+        public event Action<TMP_Text> OnMeshUploaded;
+
+        /// <summary>
+        /// Invoke <see cref="OnMeshUploaded"/>.
+        /// </summary>
+        protected void RaiseMeshUploaded()
+        {
+            if (OnMeshUploaded != null)
+                OnMeshUploaded(this);
+        }
+
         // *** SPECIAL COMPONENTS ***
 
         /// <summary>
